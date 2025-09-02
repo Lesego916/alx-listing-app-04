@@ -1,0 +1,48 @@
+// pages/booking/index.tsx
+import axios from "axios";
+import { useState } from "react";
+
+export default function BookingForm() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    cardNumber: "",
+    expirationDate: "",
+    cvv: "",
+    billingAddress: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      await axios.post("/api/bookings", formData);
+      alert("Booking confirmed!");
+    } catch (err) {
+      setError("Failed to submit booking.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="p-6 space-y-4">
+      {/* Form fields go here */}
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-blue-600 text-white px-4 py-2 rounded"
+      >
+        {loading ? "Processing..." : "Confirm & Pay"}
+      </button>
+      {error && <p className="text-red-500">{error}</p>}
+    </form>
+  );
+}
